@@ -29,10 +29,15 @@ def loadpage(id, filename):
 
 def loadbook(url):
     pageids = loadBookInfo(url)
+    totalpages = len(pageids)
     print("Info loaded: %d pages was found" % len(pageids))
+    
+    # Filename mask
+    fnmask = "{:0>%dd}.jpeg" % len(str(totalpages))
+    
     for idx, id in enumerate(pageids):
         pagenum = idx + 1
-        filename = "%d.jpeg" % pagenum
+        filename = fnmask.format(pagenum)
         loadpage(id, filename)
         print("Page %d successfully saved to %s" % (pagenum, filename))
     
