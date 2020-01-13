@@ -9,17 +9,19 @@ import json
 
 from bs4 import BeautifulSoup
 
+from urllib.parse import urlparse, urlunparse
+
 class ElibLoader:
 
     def __init__(self, url):
-        self.bookUrl = url
+        self.bookUrl = urlparse(url)
         self.session = requests.Session()
         self.session.headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36'
         }
 
     def loadBookInfo(self):
-        resp = self.session.get(self.bookUrl)
+        resp = self.session.get(urlunparse(self.bookUrl))
         soup = BeautifulSoup(resp.text, 'html.parser')
         info = json.loads(soup.find_all('script')[1].text[15:-2])
         pageids = [x['id'] for x in info["pages"]]
@@ -30,7 +32,9 @@ class ElibLoader:
         """
         Load page on maximum zoom = 8
         """
-        resp = self.session.get('http://elib.shpl.ru/pages/%d/zooms/8' % id)
+        resp = self.session.get(urlunparse((
+            self.bookUrl.scheme, self.bookUrl.netloc, '/pages/%d/zooms/8' % id,
+            None, None, None)))
 
         resp.raise_for_status()
 
