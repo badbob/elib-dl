@@ -26,7 +26,7 @@ class KanebLoader:
 
         html = resp.text
 
-        for m in re.finditer(r"/FileStore/dataFiles/fe/\d+/\d+/content/[^\"]+", html):
+        for m in re.finditer(r"/FileStore/dataFiles/\w+/\w+/\d+/content/[^\"]+", html):
             self.index.append("https://kazneb.kz" + m.group(0).replace("amp;", ''))
 
         print("Index of pages was loaded: %d" % len(self.index))
